@@ -1,0 +1,25 @@
+---
+- name: MariaDB server is installed
+  # 1) disable/stop a db service - mariadb
+  # 2) remove package - mariadb-server, python3-PyMySQL
+  hosts: databases
+  vars:
+    db_packages:
+      - mariadb-server
+      - python3-PyMySQL
+    db_service: mariadb
+    resources_url: http://ansible.example.com
+    config_file_url: "{{ resources_url }}/my.cnf.standard"
+    config_file_dst: /etc/my.cnf
+  tasks:
+    - name: disable/stop a db service - mariadb
+      service:
+        name: "{{ db_service }}"
+        state: stopped
+        enabled: no
+      ignore_errors: yes
+
+    - name: remove package - mariadb-server, python3-PyMySQL
+      yum:
+        name: "{{ db_packages }}"
+        state: absent

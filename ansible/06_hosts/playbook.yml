@@ -1,0 +1,14 @@
+---
+- name: 0) 파일 배포
+  hosts: all
+  vars:
+    src_hosts: files/hosts
+    dst_hosts: /etc/hosts
+  tasks:
+    - name: 1) /etc/hosts 파일 배포
+      ansible.builtin.copy:
+        src: "{{ src_hosts }}"
+        dest: "{{ dst_hosts }}"
+        owner: root
+        group: root
+        mode: '0644'

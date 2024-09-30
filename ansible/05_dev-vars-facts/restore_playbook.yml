@@ -1,0 +1,9 @@
+---
+- name: Restore playbook.yml
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: 디렉토리 삭제
+      ansible.builtin.file:
+        path: /etc/ansible/facts.d
+        state: absent

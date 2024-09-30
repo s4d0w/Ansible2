@@ -1,0 +1,41 @@
+---
+- name: 웹 서버 구성
+  hosts: all
+  vars_files:
+    - vars/variable.yml
+  tasks:
+    - name: 방화벽에서 포트 제거
+      ansible.posix.firewalld:
+        service: "{{ item }}"
+        permanent: true
+        immediate: true
+        state: disabled
+      loop:
+        "{{ fw_webs }}"
+
+    - name: 서비스 종료
+      ansible.builtin.service:
+        name: httpd
+        state: stopped
+        enabled: false
+
+    - name: index.html 파일 삭제
+      ansible.builtin.file:
+        path: /var/www/html/index.html
+        state: absent
+
+    - name: 패키지 삭제
+      ansible.builtin.dnf:
+        name:
+          - "{{ pkg_web }}"
+          - "{{ pkg_web_https }}"
+          - "{{ pkg_python }}"
+        state: absent
+
+
+
+
+
+
+
+

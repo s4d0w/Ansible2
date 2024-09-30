@@ -1,0 +1,30 @@
+---
+- name: Restore the playbook.yml
+  hosts: all
+  gather_facts: true
+  tasks:
+    # 1) 방화벽 포트 제거 - http, https
+    # 2) 서비스 내리기 - httpd, mariadb
+    # 3) 설정 삭제 - /var/www/html/index.html
+    # 4) 패키지 삭제 - httpd, mariadb-server
+    - name: 1) 방화벽 포트 제거 - http, https
+      ansible.posix.firewalld:
+        service: "{{ item }}"
+        permanent: true
+        immediate: true
+        state: disabled
+      loop:
+        - http
+        - https
+
+    - name: 2) 설정 삭제
+      ansible.builtin.file:
+        path: /var/www/html/index.html
+        state: absent
+
+    - name: 3) 패키지 삭제 - httpd, mariadb-server
+      ansible.builtin.dnf:
+        name:
+          - httpd
+          - mariadb-server
+        state: absent

@@ -1,0 +1,11 @@
+---
+- name: Restore playbook.yml
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Remove packages
+      ansible.builtin.yum:
+        name:
+          - httpd
+          - mariadb-server
+        state: absent

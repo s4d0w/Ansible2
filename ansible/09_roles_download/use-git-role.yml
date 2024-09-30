@@ -1,0 +1,8 @@
+---
+- name: 엯할 설치
+  hosts: web1
+  gather_facts: false
+  become: true
+
+  roles:
+    - davidkarban.git

@@ -1,0 +1,35 @@
+---
+- name: 간단한 웹 서버 구축
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: 패키지 설치
+      ansible.builtin.dnf:
+        name: 
+          - httpd
+          - firewalld
+        state: present
+
+    - name: 서비스 설정
+      ansible.builtin.copy:
+        content: "My Web Server. \n"
+        dest: /var/www/html/index.html
+        owner: apache
+        group: apache
+        mode: '0644'
+
+    - name: 서비스 기동
+      ansible.builtin.service:
+        name: "{{ item }}"
+        state: started
+        enabled: true
+      loop:
+        - httpd
+        - firewalld
+
+    - name: 방화벽 등록
+      ansible.posix.firewalld:
+        service: http
+        permanent: true
+        immediate: true
+        state: enabled

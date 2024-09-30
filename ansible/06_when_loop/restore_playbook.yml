@@ -1,0 +1,14 @@
+---
+- name: Restore playbook.yml
+  hosts: all
+  vars:
+    packages:
+      - mariadb-server
+      - python3-PyMySQL
+  tasks:
+    - name: DB 패키지 삭제
+      ansible.builtin.dnf:
+        name: "{{ item }}"
+        state: absent
+      loop: "{{ packages }}"
+      when: ansible_distribution == 'CentOS'

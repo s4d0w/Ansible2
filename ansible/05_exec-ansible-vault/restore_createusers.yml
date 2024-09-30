@@ -1,0 +1,13 @@
+---
+- name: 사용자 삭제
+  hosts: all
+  vars_files:
+    - vars/secret.yml
+  tasks:
+    - name: 사용자 추가 동작
+      ansible.builtin.user:
+         name: "{{ item.name }}"
+         state: absent
+         remove: true
+      with_items: 
+       "{{ newusers }}"

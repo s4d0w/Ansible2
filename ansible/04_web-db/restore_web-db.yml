@@ -1,0 +1,25 @@
+---
+- name: 복원 작업
+  hosts: web1
+  tasks:
+    - name: 방화벽에 서비스 제거
+      ansible.posix.firewalld:
+        service: http
+        permanent: true
+        immediate: true
+        state: disabled
+
+    - name: 웹페이지 삭제
+      ansible.builtin.file:
+        path: /var/www/html/index.php
+        state: absent
+
+    - name: 패키지 설치
+      ansible.builtin.yum:
+        name:
+          - httpd
+          - mariadb-server
+          - php
+          - php-mysqlnd
+          - php-pdo
+        state: absent

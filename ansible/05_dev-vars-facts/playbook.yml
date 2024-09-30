@@ -1,0 +1,30 @@
+---
+- name: 간단한 웹 서버 구축
+  hosts: all
+  gather_facts: true
+  tasks:
+    - name: 패키지 설치 - {{ ansible_local.custom.general.package }}
+      ansible.builtin.dnf:
+        name: "{{ ansible_local.custom.general.package }}"
+        state: present
+
+    - name: 서비스 설정
+      ansible.builtin.copy:
+        content: "My Web Server. \n"
+        dest: /var/www/html/index.html
+        owner: apache
+        group: apache
+        mode: '0644'
+
+    - name: 서비스 기동 - {{ ansible_local.custom.general.service }}
+      ansible.builtin.service:
+        name: "{{ ansible_local.custom.general.service }}"
+        state: "{{ ansible_local['custom']['general']['state'] }}"
+        enabled: true
+
+    - name: 방화벽 등록 - {{ ansible_local.custom.general.fwsvc }}
+      ansible.posix.firewalld:
+        service: "{{ ansible_local.custom.general.fwsvc }}"
+        permanent: true
+        immediate: true
+        state: enabled

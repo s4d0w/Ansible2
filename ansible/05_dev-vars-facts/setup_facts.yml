@@ -1,0 +1,20 @@
+---
+- name: 사용자 정의 팩트 파일 배포
+  hosts: webserver
+  vars:
+    fact_dir: /etc/ansible/facts.d
+    fact_file: custom.fact
+  tasks:
+    - name: 디렉토리 생성 - {{ fact_dir }}
+      ansible.builtin.file:
+        path: "{{ fact_dir }}"
+        state: directory
+        mode: '0755'
+
+    - name: 팩트 파일 생성 - {{ fact_dir }}/{{ fact_file }}
+      ansible.builtin.copy:
+        src: "{{ fact_file }}"
+        dest: "{{ fact_dir }}/{{ fact_file }}"
+        owner: root
+        group: root
+        mode: '0644'

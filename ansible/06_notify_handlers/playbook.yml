@@ -1,0 +1,58 @@
+---
+- name: MariaDB server is installed
+  hosts: databases
+  become: true
+  remote_user: ansible
+  become_method: sudo
+  become_user: root
+  vars:
+    db_packages:
+      - mariadb-server
+      - python3-PyMySQL
+    db_service: mariadb
+    resources_url: http://ansible.example.com
+    config_file_url: "{{ resources_url }}/my.cnf.standard"
+    config_file_dst: /etc/my.cnf
+  tasks:
+    - name: "{{ db_packages }} packages are installed"
+      yum:
+        name: "{{ db_packages }}"
+        state: present
+
+    - name: Make sure the database service is running
+      service:
+        name: "{{ db_service }}"
+        state: started
+        enabled: true
+      notify:
+        - set db password
+
+    - name: The {{ config_file_dst }} file has been installed
+      get_url:
+        url: "{{ config_file_url }}"
+        dest: "{{ config_file_dst }}"
+        owner: mysql
+        group: mysql
+        force: yes
+      notify:
+        - restart db service
+
+  handlers:
+    - name: restart db service
+      service:
+        name: "{{ db_service }}"
+        state: restarted
+
+    # - name: set db password
+    #   community.mysql.mysql_user:
+    #     check_implicit_admin: true
+    #     login_user: root
+    #     login_password: ''
+    #     login_unix_socket: /var/run/mysqld/mysqld.sock
+    #     name: root
+    #     host_all: yes
+    #     password: soldesk1.
+
+    - name: set db password
+      ansible.builtin.command:
+        cmd: sudo mysqladmin -uroot password 'soldesk1.'

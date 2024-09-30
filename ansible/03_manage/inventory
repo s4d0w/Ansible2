@@ -1,0 +1,13 @@
+[myself]
+localhost
+
+[intranetweb]
+web1
+
+[internetweb]
+web2
+
+[web:children]
+intranetweb
+internetweb
+

@@ -1,0 +1,19 @@
+---
+# tasks file for myfirewall
+- name: 패키지 설치
+  ansible.builtin.dnf:
+    name: firewalld
+    state: latest
+
+- name: 방화벽 서비스 기동
+  ansible.builtin.service:
+    name: firewalld
+    state: started
+    enabled: true
+
+- name: 방화벽 포트 등록
+  ansible.posix.firewalld:
+    service: "{{ firewall_service }}"
+    permanent: true
+    immediate: true
+    state: enabled

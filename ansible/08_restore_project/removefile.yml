@@ -1,0 +1,5 @@
+- name: 파일 삭제
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  loop: "{{ files }}"
